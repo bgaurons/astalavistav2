@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @author			Benjamin Gauronskas
  * @version			0.1
  */
-public class MotMessage extends Message implements Serializable
+public class MotMessage extends Message
 {
 	//These are the currently implemented features in the message sending.
 	/**

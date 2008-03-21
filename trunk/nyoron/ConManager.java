@@ -198,9 +198,7 @@ public class ConManager
 	public void sendMessage(Message message){
 		connectionLock.lock();
 
-		//System.out.println("!@#$\tAcquired locks for sending message:\n" +
-		//					message);
-		System.out.println(message);
+		//System.out.println(message);
 
 		try{
 			ObjOut.writeObject(message);
@@ -260,7 +258,7 @@ public class ConManager
 					message = (Message) ObjIn.readObject();
 					//Later make it so that a new thread is created here
 					//to handle each message appropriately.
-					System.out.println(message);
+					//System.out.println(message);
 
 					//Make a new thread to handle the message
 					new MessageHandler(message);
