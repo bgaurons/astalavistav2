@@ -17,7 +17,7 @@ import java.io.Serializable;
  * @author			Benjamin Gauronskas
  * @version			0.1
  */
-public class ThermMessage extends Message implements Serializable
+public class ThermMessage extends Message
 {
 
 	/**
