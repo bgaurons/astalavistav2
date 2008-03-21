@@ -61,10 +61,10 @@ public class TempPanel extends JPanel
 		for(int j=0; j<Thermopile.VERT_WIDTH; j++){
 			for(int k=0; k<Thermopile.HOR_WIDTH; k++){
 				red = Math.abs((int)(heatMap[k][j]*DEF));
-				System.out.println("!@#$\tRed is: " + red);
+				//System.out.println("!@#$\tRed is: " + red);
 				Color shit = new Color(red,0,0);
 
-				System.out.println(heatMap[k][j]);
+				//System.out.println(heatMap[k][j]);
 				page.setColor(shit);
 				page.fillRect(k*SIZE,j*SIZE,SIZE,SIZE);
 			}

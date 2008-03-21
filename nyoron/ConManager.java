@@ -200,6 +200,7 @@ public class ConManager
 
 		//System.out.println("!@#$\tAcquired locks for sending message:\n" +
 		//					message);
+		System.out.println(message);
 
 		try{
 			ObjOut.writeObject(message);
@@ -259,7 +260,7 @@ public class ConManager
 					message = (Message) ObjIn.readObject();
 					//Later make it so that a new thread is created here
 					//to handle each message appropriately.
-					//System.out.println(message);
+					System.out.println(message);
 
 					//Make a new thread to handle the message
 					new MessageHandler(message);
@@ -334,7 +335,7 @@ public class ConManager
 		 * @author			Benjamin Gauronskas
 		 */
 		private void motor(MotMessage msg){
-			System.out.println("MOTOR: " + msg.control + " " + msg.value);
+			//System.out.println("MOTOR: " + msg.control + " " + msg.value);
 			switch(msg.control){
 				case MotMessage.CTRL_STOP:
 					System.out.println("Bye");
