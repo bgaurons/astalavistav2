@@ -8,6 +8,10 @@ import java.util.concurrent.locks.*;
 	of measurement.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>March 20, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Sped up the retrieve by a factor of 8.</li>
+		</ul>
 		<li>March 14, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Made thread safety improvements.</li>
@@ -177,15 +181,17 @@ public class Thermopile extends I2CDevice
 		//hor toggle tells us that we have moved horizontally. Do not
 		//move vertically.
 		boolean horToggle = false;
-		byte returnVal;
+		byte returnVal = 1;
 
 
 		sweepLock.lock();
+		returnVal = readTemp();
 
 		arrayLock.lock();
-		temperatures[(HOR_WIDTH-1)-horPos][vertPos-VERT_OFFSET] =
-			returnVal = readTemp();
+		temperatures[(HOR_WIDTH-1)-horPos][vertPos-VERT_OFFSET] = returnVal;
 		arrayLock.unlock();
+
+
 		//Now get ready to read the next location. First point the
 		//horizontal view correctly
 
@@ -193,12 +199,16 @@ public class Thermopile extends I2CDevice
 		//going down.
 		if ((vertPos == TEMP_1 && vertDirection == UP) ||
 		(vertPos == TEMP_8 && vertDirection == DOWN)){
+			//Copy the pointer of the old column to the accessible array.
+			//Then make a new array.
+
 			if (horDirection == LEFT){
 				horPos--;
 				moveServo();
 				//If we reach the left side, go the other way.
 				if (horPos == SERVO_POS_MIN){
 					horDirection = RIGHT;
+
 					new UpdateThread(this);
 				}
 			}
@@ -293,14 +303,14 @@ public class Thermopile extends I2CDevice
          */
 	public byte[][] getTemperatures()
 	{
-		byte[][] returnValue = new byte[HOR_WIDTH][VERT_WIDTH];
+		byte[][] returnValue = new byte[HOR_WIDTH][];
 
-		for(byte i = 0; i < HOR_WIDTH; i++)
-			for(byte j = 0; j < VERT_WIDTH; j++){
-				arrayLock.lock();
-				returnValue[i][j] = temperatures[i][j];
-				arrayLock.unlock();
-			}
+		for(byte i = 0; i < HOR_WIDTH; i++){
+			arrayLock.lock();
+			returnValue[i] = temperatures[i];
+			temperatures[i] = new byte[VERT_WIDTH];
+			arrayLock.unlock();
+		}
 
 
 
