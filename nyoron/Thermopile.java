@@ -8,6 +8,10 @@ import java.util.concurrent.locks.*;
 	of measurement.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>March 21, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Reversed yesterday's change. Broke concurrency.</li>
+		</ul>
 		<li>March 20, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Sped up the retrieve by a factor of 8.</li>
@@ -303,14 +307,14 @@ public class Thermopile extends I2CDevice
          */
 	public byte[][] getTemperatures()
 	{
-		byte[][] returnValue = new byte[HOR_WIDTH][];
+		byte[][] returnValue = new byte[HOR_WIDTH][VERT_WIDTH];
 
-		for(byte i = 0; i < HOR_WIDTH; i++){
-			arrayLock.lock();
-			returnValue[i] = temperatures[i];
-			temperatures[i] = new byte[VERT_WIDTH];
-			arrayLock.unlock();
-		}
+		for(byte i = 0; i < HOR_WIDTH; i++)
+			for(byte j = 0; j < VERT_WIDTH; j++){
+				arrayLock.lock();
+				returnValue[i][j] = temperatures[i][j];
+				arrayLock.unlock();
+			}
 
 
 
