@@ -34,5 +34,10 @@ public class Registers
 	incoming messages
 	*/
 	public static TempPanel tempPanel;
+	/**
+	The current robot AI
+	*/
+	public static AI ai;
+
 
 }
