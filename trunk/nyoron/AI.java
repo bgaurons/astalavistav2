@@ -65,7 +65,7 @@ public abstract class AI implements Runnable
 	@author		Benjamin Gauronskas
 	*/
 	public void run(){
-		while(logic());
+		while(logic() && isRunning);
 	}
 
 	/**
