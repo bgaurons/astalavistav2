@@ -9,6 +9,10 @@ import java.io.*;
  *
  * 	<h1>Revision History:</h1>
  *	<ul>
+ *		<li>March 23, 2008, Benjamin Gauronskas</li>
+ *		<ul>
+ *			<li>Fixed mistake in shutdown logic.</li>
+ *		</ul>
  *		<li>March 22, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Created file.</li>
@@ -61,9 +65,7 @@ public abstract class AI implements Runnable
 	@author		Benjamin Gauronskas
 	*/
 	public void run(){
-		while(isRunning){
-			isRunning = logic();
-		}
+		while(logic());
 	}
 
 	/**
