@@ -316,9 +316,12 @@ public class ConManager
 
 			//Send the message to the correct method to handle
 			switch(msg.getType()){
-				case Message.DEBUG: break; //Just throw it away.
-				case Message.MOTOR: motor((MotMessage) msg); break;
-				case Message.THERM: therm((ThermMessage) msg); break;
+				case Message.DEBUG:		break; //Just throw it away.
+				case Message.THERM:		therm((ThermMessage) msg); break;
+				case Message.AI:		ai((AIMessage) msg); break;
+				case Message.MOTOR:
+					if (Registers.ai.aiType == AI.MANUAL){
+						motor((MotMessage) msg);} break;
 				default: break; //Means junk... hopefully.
 			}
 		}
@@ -369,6 +372,26 @@ public class ConManager
 		 */
 		private void therm(ThermMessage msg){
 			Registers.tempPanel.refresh(msg.map);
+		}
+
+		/**
+		 * This method stops the old AI, and starts the new one.
+		 *
+		 *
+		 * @param	msg		The message with the new AI type.
+		 * @author			Benjamin Gauronskas
+		 */
+		private void ai(AIMessage msg){
+			if(Registers.ai != null){
+				//Stop the ai.
+				Registers.ai.stop();
+
+				switch(msg.aiType){
+					case AI.MANUAL: Registers.ai = new ManualAI(); break;
+
+					default: break;
+				}
+			}
 		}
 	}
 

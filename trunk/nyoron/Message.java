@@ -22,9 +22,10 @@ import java.io.*;
  */
 public class Message implements Serializable
 {
-	public static final byte DEBUG = 0x00;
-	public static final byte MOTOR = 0x01;
-	public static final byte THERM = 0x02;
+	public static final byte DEBUG	 = 0x00;
+	public static final byte MOTOR	 = 0x01;
+	public static final byte THERM	 = 0x02;
+	public static final byte AI		 = 0x03;
 
 	private Date timestamp;
 	private byte message_type;
