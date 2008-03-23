@@ -8,6 +8,10 @@ import java.util.concurrent.locks.*;
 	of measurement.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>March 23, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Added logic that might help find hottest spots.</li>
+		</ul>
 		<li>March 21, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Reversed yesterday's change. Broke concurrency.</li>
@@ -71,7 +75,7 @@ public class Thermopile extends I2CDevice
 
 	//The amount of time that the thread needs to sleep to allow the servo
 	//to adjust itself in milliseconds.
-	private static final int SERVO_SLEEP = 50;
+	private static final int SERVO_SLEEP = 5;
 
 	//The size of the array storing all the temperatures.
 	public static final int HOR_WIDTH = 32;
@@ -79,6 +83,9 @@ public class Thermopile extends I2CDevice
 
 	//The offset in register number to make the correct array position
 	private static final byte VERT_OFFSET = 0x02;
+
+	//The offset in register number to make the correct array position
+	private static final byte DEFAULT_THRESHHOLD = 40;
 
 
 	/**
@@ -99,6 +106,25 @@ public class Thermopile extends I2CDevice
 	been set to.
 	*/
 	private byte horPos;
+
+	/**
+	The temperature that needs to be crossed to trigger the threshhold.
+	*/
+	private byte threshhold;
+
+	/**
+	The column that the threshhold has been crossed at.
+	In degrees, column 31 is 90 degrees left of the front, and column 0 is 90
+	degrees to the right.
+	*/
+	private byte threshholdColumn;
+
+
+	/**
+	Tells whether the threshhold has been crossed.
+	*/
+	private boolean threshholdCrossed;
+
 
 	/**
 	Whether we are scanning up or down.
@@ -135,6 +161,12 @@ public class Thermopile extends I2CDevice
 	private ReentrantLock arrayLock;
 
 	/**
+	Concurrency threshhold locks. Used for variables that modify the
+	threshhold. It allows access to said variables.
+	*/
+	private ReentrantLock threshholdLock;
+
+	/**
 	An automatically started thread that starts the sweeping logic to read new
 	temperatures all the time
 	*/
@@ -162,8 +194,12 @@ public class Thermopile extends I2CDevice
 		sweepLock = new ReentrantLock();
 		servoLock = new ReentrantLock();
 		arrayLock = new ReentrantLock();
+		threshholdLock = new ReentrantLock();
 
 		temperatures = new byte[HOR_WIDTH][VERT_WIDTH];
+
+		threshhold = DEFAULT_THRESHHOLD;
+		threshholdCrossed = false;
 
 		//Initialize it to start position
 		moveServo();
@@ -190,10 +226,14 @@ public class Thermopile extends I2CDevice
 
 		sweepLock.lock();
 		returnVal = readTemp();
-
 		arrayLock.lock();
 		temperatures[(HOR_WIDTH-1)-horPos][vertPos-VERT_OFFSET] = returnVal;
 		arrayLock.unlock();
+
+		if(returnVal >= threshhold){
+			setThreshhold(returnVal, horPos);
+		}
+
 
 
 		//Now get ready to read the next location. First point the
@@ -297,6 +337,64 @@ public class Thermopile extends I2CDevice
 		finally{
 			servoLock.unlock();
 		}
+	}
+
+    /**
+	Sets the crossed threshhold, and changes the threshholdCrossed
+	boolean to true.
+
+	@author			Benjamin Gauronskas
+	@param	temp	The new threshhold
+	@param	column	The column where the threshhold was crossed.
+    */
+	public void setThreshhold(byte temp, byte column)
+	{
+		threshholdLock.lock();
+		threshhold = temp;
+		threshholdCrossed = true;
+		threshholdColumn = column;
+		threshholdLock.unlock();
+
+	}
+
+    /**
+	Tells if the threshhold was crossed.
+
+	@return			Returns whether the threshhold was crossed.
+
+	@author			Benjamin Gauronskas
+
+    */
+	public boolean threshholdCrossed()
+	{
+		boolean returnVal;
+
+		threshholdLock.lock();
+		returnVal = threshholdCrossed;
+		threshholdLock.unlock();
+
+		return returnVal;
+
+	}
+
+    /**
+	Tells the last column that the threshhold was crossed at
+
+	@return			The last column the threshhold was crossed.
+
+	@author			Benjamin Gauronskas
+
+    */
+	public byte getHotColumn()
+	{
+		byte returnVal;
+
+		threshholdLock.lock();
+		returnVal = threshholdColumn;
+		threshholdLock.unlock();
+
+		return returnVal;
+
 	}
 
 
