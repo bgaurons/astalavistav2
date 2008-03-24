@@ -1,7 +1,14 @@
+import java.util.concurrent.locks.*;
+
 /**
 <p>Motor.java - A driver for the motorboard using the i2c/usb converter.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>March 23, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Added constants and logic for turning.</li>
+			<li><b>NOTE: it is not complete and should be fixed later.</b></li>
+		</ul>
 		<li>March 13, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Compiled.</li>
@@ -44,6 +51,11 @@ public class Motor extends I2CDevice implements Runnable
 	*/
 	public boolean go;
 
+	/**
+	Controls the concurrency of the motor controls.
+	*/
+	private ReentrantLock motorLock;
+
 	//Constants
 
 	//The default address for the motor
@@ -75,6 +87,27 @@ public class Motor extends I2CDevice implements Runnable
 
 	private static final int SLEEP_TIME = 100;
 
+	private static final byte DEFAULT_ACCELERATION = 10;
+
+	private static final byte DEFAULT_SPEED = 30;
+
+	//This is a guess, but I hope to get an estimate of the amount of time
+	//it takes to turn a given amount using DEFAULT_SPEED.
+	private static final int SLEEP_90_DEGREES = 900;
+	private static final int SLEEP_180_DEGREES = SLEEP_90_DEGREES*2;
+
+
+
+	/**
+	A constant to make the turning method easier to read.
+	*/
+	public static final boolean LEFT = false;
+
+	/**
+	A constant to make the turning method easier to read.
+	*/
+	public static final boolean RIGHT = true;
+
 
         /**
 	Constructor. Gives access to wheels attached to the I2CChannel passed
@@ -96,11 +129,13 @@ public class Motor extends I2CDevice implements Runnable
 				//left as turn constant
 		rightMotor(0);	// set forward motor speed to stop
 		leftMotor(0);	// set turn motor speed to stop
-		accel(10);
+		accel(DEFAULT_ACCELERATION);
 
 		forward = 0;
 		turn = 0;
 		go = true;
+
+		motorLock = new ReentrantLock();
 	}
 
         /**
@@ -173,6 +208,37 @@ public class Motor extends I2CDevice implements Runnable
 		setTurn((byte)num);
 	}
 
+    /**
+	I am almost certain that this method will not work as hoped without some
+	calibration of the motors and the like, but it is here to help the people
+	working on AI have some sort of tools to program with. Use constants
+	Motor.LEFT or Motor.RIGHT as a parameter to choose direction.
+	@param		direction	Direction to turn the Robot. and then stop it.
+	@author		Benjamin Gauronskas
+    */
+	public void Turn90(boolean direction)
+	{
+		//Stop forward motor.
+		rightMotor(0);
+		//Turn the turn motor DEFAULT_SPEED in the right direction.
+		if(direction == RIGHT){
+			leftMotor(DEFAULT_SPEED);
+		}
+		else{
+			leftMotor(-1*DEFAULT_SPEED);
+		}
+		//Now sleep until we get to where we need
+		try{
+			Thread.sleep(SLEEP_90_DEGREES);
+		}
+		catch(InterruptedException ex){
+			ex.printStackTrace();
+		}
+
+		//Stop the turn motor.
+		leftMotor(0);
+	}
+
 
 
         /**
@@ -232,7 +298,11 @@ public class Motor extends I2CDevice implements Runnable
          */
 	public boolean rightMotor(byte speed)
 	{
-		return super.command(RIGHT_REGISTER, speed);
+		boolean returnVal;
+		motorLock.lock();
+		returnVal = super.command(RIGHT_REGISTER, speed);
+		motorLock.unlock();
+		return returnVal;
 	}
 
 
@@ -245,7 +315,7 @@ public class Motor extends I2CDevice implements Runnable
          */
 	public boolean rightMotor(int speed)
 	{
-		return super.command(RIGHT_REGISTER, (byte) speed);
+		return rightMotor((byte) speed);
 	}
 
 
@@ -258,7 +328,11 @@ public class Motor extends I2CDevice implements Runnable
          */
 	public boolean leftMotor(byte speed)
 	{
-		return super.command(LEFT_REGISTER, speed);
+		boolean returnVal;
+		motorLock.lock();
+		returnVal = super.command(LEFT_REGISTER, speed);
+		motorLock.unlock();
+		return returnVal;
 	}
 
 
@@ -271,7 +345,7 @@ public class Motor extends I2CDevice implements Runnable
          */
 	public boolean leftMotor(int speed)
 	{
-		return super.command(LEFT_REGISTER, (byte) speed);
+		return leftMotor((byte) speed);
 	}
 
 
@@ -358,5 +432,7 @@ public class Motor extends I2CDevice implements Runnable
 	{
 		return readLong(VOLT_REGISTER);
 	}
+
+
 } // end motor class
 
