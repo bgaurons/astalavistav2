@@ -7,6 +7,10 @@ connection.
 
 	<h1>Revision History:</h1>
 	<ul>
+		<li>March 23, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Added the AI module to the startup logic.</li>
+		</ul>
 		<li>March 21, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Reordered initialization to avoid null pointers.</li>
@@ -39,7 +43,7 @@ public class RobotLogic
 	{
 		// Open New welcome socket
 
-
+		Registers.ai = new ManualAI();
 		I2CChannel com5 = new I2CChannel("COM5");
 		Registers.motor = new Motor(com5);
 		Thermopile thermopile = new Thermopile(com5);
