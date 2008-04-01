@@ -25,10 +25,12 @@ import java.lang.ClassNotFoundException;
  *	<ul>
  *		<li>March 19, 2008, Benjamin Gauronskas</li>
  *		<ul>
+ *			<li>Added new messages to switch types.</li>
+ *		</ul>
+ *		<li>March 19, 2008, Benjamin Gauronskas</li>
+ *		<ul>
  *			<li>Integrated into the main code.</li>
  *		</ul>
- *	</ul>
- *	<ul>
  *		<li>January 27, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Created file.</li>
@@ -319,6 +321,10 @@ public class ConManager
 				case Message.DEBUG:		break; //Just throw it away.
 				case Message.THERM:		therm((ThermMessage) msg); break;
 				case Message.AI:		ai((AIMessage) msg); break;
+				case Message.POSIT:		position((PosMessage) msg);break;
+				case Message.MANUL:
+					if (Registers.ai.aiType == AI.MANUAL){
+						manual((ManMessage) msg);} break;
 				case Message.MOTOR:
 					if (Registers.ai.aiType == AI.MANUAL){
 						motor((MotMessage) msg);} break;
@@ -375,6 +381,18 @@ public class ConManager
 		}
 
 		/**
+		 * This method changes the robot's direction and location depending
+		 * on a button pressed at the terminal.
+		 *
+		 *
+		 * @param	msg		The message with the direction pressed.
+		 * @author			Benjamin Gauronskas
+		 */
+		private void manual(ManMessage msg){
+			MovementLogic.calculateMan(msg.direction);
+		}
+
+		/**
 		 * This method stops the old AI, and starts the new one.
 		 *
 		 *
@@ -388,10 +406,21 @@ public class ConManager
 
 				switch(msg.aiType){
 					case AI.MANUAL: Registers.ai = new ManualAI(); break;
-
+					case AI.THERML: Registers.ai = new ThermlAI(); break;
 					default: break;
 				}
 			}
+		}
+
+		/**
+		 * Changes the positional information in the GUI.
+		 *
+		 *
+		 * @param	msg		The message with the new Position information.
+		 * @author			Benjamin Gauronskas
+		 */
+		private void position(PosMessage msg){
+			Registers.mainPac.parsePosMessage(msg);
 		}
 	}
 

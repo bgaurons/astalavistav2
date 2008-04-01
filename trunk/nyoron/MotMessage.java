@@ -7,6 +7,11 @@ import java.io.Serializable;
  *
  * 	<h1>Revision History:</h1>
  *	<ul>
+ *
+ *		<li>April 1, 2008, Benjamin Gauronskas</li>
+ *		<ul>
+ *			<li>Hopefully, this is deprecated.</li>
+ *		</ul>
  *		<li>March 19, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Created file.</li>
@@ -52,11 +57,12 @@ public class MotMessage extends Message
 	*/
 	public byte control;
 
+
 	/**
 	 * Makes a message with a control and a value.
 	 *
-	 * @param	value	The value for a command
-	 * @param	control	The control command.
+	 * @param	value		The value for a command
+	 * @param	control		The control command.
 	 * @author			Benjamin Gauronskas
 	 */
 	public MotMessage(byte value, byte control){
@@ -65,6 +71,7 @@ public class MotMessage extends Message
 		this.value = value;
 		this.control = control;
 	}
+
 
 
 
