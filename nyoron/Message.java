@@ -10,6 +10,10 @@ import java.io.*;
  *
  * 	<h1>Revision History:</h1>
  *	<ul>
+ *		<li>April 1, 2008, Benjamin Gauronskas</li>
+ *		<ul>
+ *			<li>Added type constants.</li>
+ *		</ul>
  *		<li>January 27, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Created file.</li>
@@ -26,6 +30,8 @@ public class Message implements Serializable
 	public static final byte MOTOR	 = 0x01;
 	public static final byte THERM	 = 0x02;
 	public static final byte AI		 = 0x03;
+	public static final byte POSIT	 = 0x04;
+	public static final byte MANUL	 = 0x05;
 
 	private Date timestamp;
 	private byte message_type;

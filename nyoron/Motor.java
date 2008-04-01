@@ -4,6 +4,10 @@ import java.util.concurrent.locks.*;
 <p>Motor.java - A driver for the motorboard using the i2c/usb converter.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>April 1, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Modified concurrency for higher level logic.</li>
+		</ul>
 		<li>March 23, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Added constants and logic for turning.</li>
@@ -34,27 +38,7 @@ import java.util.concurrent.locks.*;
 public class Motor extends I2CDevice implements Runnable
 {
 
-	/**
-	How fast to travel forward.
-	I do not know about the scale
-	*/
-	public byte forward;
-	/**
-	How fast to turn.
-	I do not know about the scale
-	*/
-	public byte turn;
 
-	/**
-	Whether the thread is running or not.
-	No method is given to turn this off... yet.
-	*/
-	public boolean go;
-
-	/**
-	Controls the concurrency of the motor controls.
-	*/
-	private ReentrantLock motorLock;
 
 	//Constants
 
@@ -91,10 +75,36 @@ public class Motor extends I2CDevice implements Runnable
 
 	private static final byte DEFAULT_SPEED = 30;
 
+
+	//This is how long it takes to turn unit radians with the robot.
+	//if we multiply this by the amount we are turning, then we get the correct
+	//sleep amount.
+	private static final int SLEEP_UNIT = 900;
+
+	/**
+	The amount of inches traversed in a single millisecond
+	*/
+	public static final double INCHES_PER_MILLISECOND = 0.001;
+
 	//This is a guess, but I hope to get an estimate of the amount of time
 	//it takes to turn a given amount using DEFAULT_SPEED.
-	private static final int SLEEP_90_DEGREES = 900;
-	private static final int SLEEP_180_DEGREES = SLEEP_90_DEGREES*2;
+	private static final int SLEEP_PI = (int)(900* Math.PI);
+	private static final int SLEEP_2_PI = SLEEP_PI*2;
+
+/*
+WE RECEIVE AN ANGLE FROM THE SERVER IN RADIANS... THE SMALLEST ANGLE IS PI/30
+(6 DEGREES)
+
+WE NEED TO CONVERT THIS ANGLE INTO A TIME... BUT WHAT IS THE CONVERSION FACTOR...
+
+
+IF WE KNOW HOW LONG IT TAKES TO TURN PI... HOW CAN WE FIND THE AMOUNT OF TIME
+IT TAKES TO TURN X?
+
+WE TAKE THE TIME IT TAKES TO TURN PI AND THEN WE DIVIDE IT BY PI.
+NOW WE CAN MULTIPLY THIS BY X AND WE HAVE THE AMOUNT OF TIME IT TAKES TO ROTATE
+X.
+*/
 
 
 
@@ -107,6 +117,36 @@ public class Motor extends I2CDevice implements Runnable
 	A constant to make the turning method easier to read.
 	*/
 	public static final boolean RIGHT = true;
+
+
+	/**
+	How fast to travel forward.
+	I do not know about the scale
+	*/
+	public byte forward;
+	/**
+	How fast to turn.
+	I do not know about the scale
+	*/
+	public byte turn;
+
+	/**
+	Whether the thread is running or not.
+	No method is given to turn this off... yet.
+	*/
+	public boolean go;
+
+	/**
+	Controls the concurrency of the motor controls.
+	*/
+	private ReentrantLock motorLock;
+
+	/**
+	Logic lock locks chunks of logic that are doing "intelligent" things to the
+	motors. It should be never be held by the thread that holds motorLock. The
+	thread that holds logicLock may hold the motorLock, however.
+	*/
+	private ReentrantLock logicLock;
 
 
         /**
@@ -127,6 +167,9 @@ public class Motor extends I2CDevice implements Runnable
 				// 0: stop, 127:
 				//full forward motors controlled together with
 				//left as turn constant
+		motorLock = new ReentrantLock();
+		logicLock = new ReentrantLock();
+
 		rightMotor(0);	// set forward motor speed to stop
 		leftMotor(0);	// set turn motor speed to stop
 		accel(DEFAULT_ACCELERATION);
@@ -135,7 +178,7 @@ public class Motor extends I2CDevice implements Runnable
 		turn = 0;
 		go = true;
 
-		motorLock = new ReentrantLock();
+
 	}
 
         /**
@@ -216,7 +259,7 @@ public class Motor extends I2CDevice implements Runnable
 	@param		direction	Direction to turn the Robot. and then stop it.
 	@author		Benjamin Gauronskas
     */
-	public void Turn90(boolean direction)
+	public void turn90(boolean direction)
 	{
 		//Stop forward motor.
 		rightMotor(0);
@@ -229,7 +272,7 @@ public class Motor extends I2CDevice implements Runnable
 		}
 		//Now sleep until we get to where we need
 		try{
-			Thread.sleep(SLEEP_90_DEGREES);
+			Thread.sleep(SLEEP_PI);
 		}
 		catch(InterruptedException ex){
 			ex.printStackTrace();
@@ -238,6 +281,42 @@ public class Motor extends I2CDevice implements Runnable
 		//Stop the turn motor.
 		leftMotor(0);
 	}
+
+    /**
+	The motors will turn the device by the given angle.
+	@param		turnAngle	Direction to turn the Robot. and then stop it.
+	@author		Benjamin Gauronskas
+    */
+	public void turn(double turnAngle)
+	{
+		logicLock.lock();
+		//Stop forward motor.
+		rightMotor(0);
+		//Turn the turn motor DEFAULT_SPEED in the right direction.
+		//if(direction == RIGHT){
+		if(turnAngle > 0)
+			leftMotor(DEFAULT_SPEED);
+		else
+			leftMotor(-1*DEFAULT_SPEED);
+		//}
+		//else{
+
+		//}
+		//Now sleep until we get to where we need
+		try{
+			Thread.sleep((int)Math.abs(turnAngle*SLEEP_UNIT));
+		}
+		catch(InterruptedException ex){
+			ex.printStackTrace();
+		}
+
+		//Stop the turn motor.
+		leftMotor(0);
+		logicLock.unlock();
+
+	}
+
+
 
 
 

@@ -9,6 +9,10 @@ import java.io.*;
  *
  * 	<h1>Revision History:</h1>
  *	<ul>
+ *		<li>April 1, 2008, Benjamin Gauronskas</li>
+ *		<ul>
+ *			<li>Added skeleton heat seaking AI.</li>
+ *		</ul>
  *		<li>March 23, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Fixed mistake in shutdown logic.</li>
@@ -29,6 +33,11 @@ public abstract class AI implements Runnable
 	The console controls the robot. The robot does not use any intelligence.
 	*/
 	public static final byte MANUAL	 = 0x00;
+
+	/**
+	The robot looks for heat.
+	*/
+	public static final byte THERML = 0x01;
 
 	/**
 	The thread created and ran when an AI is started.

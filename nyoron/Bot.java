@@ -7,6 +7,11 @@ import java.awt.*;
 	console.</p>
 	<h1>Revision History:</h1>
 	<ul>
+
+		<li>April 1, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Using register wide version of BotPanel now.</li>
+		</ul>
 		<li>March 19, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Refitted for updated network code.</li>
@@ -54,15 +59,15 @@ public class Bot extends JFrame
 		Registers.tempPanel = new TempPanel();
 
 		width = 850;
-		height = 600;
+		height = 700;
 		mainFrame = new JFrame("Capstone Robot Demo");
 		StatsPanel stats = new StatsPanel();
-		BotPanel mainPac = new BotPanel(stats);
+		Registers.mainPac = new BotPanel(stats);
 
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.add(stats);
-		mainPanel.add(mainPac);
+		mainPanel.add(Registers.mainPac);
 		mainPanel.add(Registers.tempPanel);
 
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

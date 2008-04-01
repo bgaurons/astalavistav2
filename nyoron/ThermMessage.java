@@ -1,4 +1,4 @@
-import java.io.Serializable;
+
 
 /**
  * <p>ThermMessage.java - This class sends a 32x8 array, presumably from the

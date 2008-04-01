@@ -5,6 +5,10 @@ a good idea to make  a seperate one for the server and the client at some
 point.</p>
 	<h1>Revision History:</h1>
 	<ul>
+		<li>April 1, 2008, Benjamin Gauronskas</li>
+		<ul>
+			<li>Added BotPanel since it now depends on messages.</li>
+		</ul>
 		<li>March 19, 2008, Benjamin Gauronskas</li>
 		<ul>
 			<li>Wrote the method and added what I needed.</li>
@@ -38,6 +42,10 @@ public class Registers
 	The current robot AI
 	*/
 	public static AI ai;
+	/**
+	The gui element that shows where the robot is.
+	*/
+	public static BotPanel mainPac;
 
 
 }
