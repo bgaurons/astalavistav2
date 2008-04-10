@@ -35,7 +35,7 @@ import javax.imageio.ImageIO;
   @author                      ???
   @version                     0.2
  */
-public class BotPanel extends JPanel
+public class BotPanel extends JPanel implements Scrollable
 {
 	/**
 	A label for the panel.
@@ -119,7 +119,7 @@ public class BotPanel extends JPanel
 	/**
 	The amount of pixels per inch.
 	*/
-	private static final int PPI = 1;
+	public static final int PPI = 2;
 
 
 	/**
@@ -167,6 +167,26 @@ public class BotPanel extends JPanel
 	The pixels tall that the window screen will be.
 	*/
 	private static final int WINDOW_PIXELS_Y = WINDOW_FEET_Y*PPF;
+
+	/**
+	The area of the scroll box: Y coordinate
+	*/
+	private static final int VIEWABLE_Y = 500;
+
+	/**
+	The area of the scroll box: X coordinate
+	*/
+	private static final int VIEWABLE_X = 800;
+
+	/**
+	The amount to scroll over at anyone time.
+	*/
+	private int maxUnitIncrement;
+
+	/**
+	Whether a key is being pressed or not.
+	*/
+	private boolean keyPressed;
 	//THE END OF BEN'S SHIT.
 
 
@@ -180,6 +200,8 @@ public class BotPanel extends JPanel
 	{
 		//out = dos;
 		//sock = s;
+		keyPressed = false;
+		maxUnitIncrement = 1;
 		sPane = newStats;
 		speed = MovementLogic.SPEED_DEFAULT;
 		botRad = ROBOT_RADIUS_PIXELS;
@@ -232,6 +254,7 @@ public class BotPanel extends JPanel
 
 		this.setFocusable(true);
 		this.setPreferredSize(new Dimension(WINDOW_PIXELS_X,WINDOW_PIXELS_Y));
+		//this.setPreferredSize(new Dimension(800,800));
 		this.addKeyListener(new arrowListener());
 
 
@@ -239,6 +262,94 @@ public class BotPanel extends JPanel
 		pacSpeedControl = speed/SPEED_DIVISOR;
 		turnspeed = 15;
 	}
+
+    /**
+	Sets the map as the map that is sent from the robot.
+	@param	map	The updated map graphic.
+	@author		Benjamin Gauronskas
+    */
+    public void updateMap(BufferedImage map) {
+		this.map = map;
+    }
+
+
+    /**
+	No idea what this does... necessary for scrollable interface
+	@return		false
+	@author		Benjamin Gauronskas
+    */
+    public boolean getScrollableTracksViewportWidth() {
+        return false;
+    }
+
+    /**
+	No idea what this does... necessary for scrollable interface
+	@return		false
+	@author		Benjamin Gauronskas
+    */
+    public boolean getScrollableTracksViewportHeight() {
+        return false;
+    }
+
+    /**
+	No idea what this does... necessary for scrollable interface
+	@param		visibleRect		What we see right now
+	@param		orientation		The flow direction of the component
+	@param		direction		The direction we are moving in
+	@return		Returns how far to scroll in which direction.
+	@author		Benjamin Gauronskas
+    */
+    public int getScrollableBlockIncrement(Rectangle visibleRect,
+                                           int orientation,
+                                           int direction) {
+        if (orientation == SwingConstants.HORIZONTAL) {
+            return visibleRect.width - maxUnitIncrement;
+        } else {
+            return visibleRect.height - maxUnitIncrement;
+        }
+    }
+
+    /**
+	No idea what this does... necessary for scrollable interface
+	@param	visibleRect		Current viewable direction
+	@param	orientation		What direction the panel flows
+	@param	direction		The direction we are moving the panel.
+	@return		tells what the new view should be
+	@author		Benjamin Gauronskas
+    */
+    public int getScrollableUnitIncrement(Rectangle visibleRect,
+                                          int orientation,
+                                          int direction) {
+        //Get the current position.
+        int currentPosition = 0;
+        if (orientation == SwingConstants.HORIZONTAL) {
+            currentPosition = visibleRect.x;
+        } else {
+            currentPosition = visibleRect.y;
+        }
+
+        //Return the number of pixels between currentPosition
+        //and the nearest tick mark in the indicated direction.
+        if (direction < 0) {
+            int newPosition = currentPosition -
+                             (currentPosition / maxUnitIncrement)
+                              * maxUnitIncrement;
+            return (newPosition == 0) ? maxUnitIncrement : newPosition;
+        } else {
+            return ((currentPosition / maxUnitIncrement) + 1)
+                   * maxUnitIncrement
+                   - currentPosition;
+        }
+    }
+
+    /**
+	No idea what this does... necessary for scrollable interface
+	@return		The size of the scrollable area.
+	@author		Benjamin Gauronskas
+    */
+    public Dimension getPreferredScrollableViewportSize() {
+        return new Dimension(VIEWABLE_X, VIEWABLE_Y);
+    }
 
     /**
 	Redraws the screen. Ran every time repaint() is called.
@@ -316,7 +427,7 @@ public class BotPanel extends JPanel
     */
 	public void parsePosMessage(PosMessage msg)
 	{
-		System.out.println("Received position message:\n!@#$" + msg);
+		//System.out.println("Received position message:\n!@#$" + msg);
 		this.speed = msg.speed/SPEED_DIVISOR;
 		this.botX = msg.x;
 		this.botY = msg.y;
@@ -326,63 +437,6 @@ public class BotPanel extends JPanel
 
 	}
 
-	/**
-	mouthMover
-	This is a listener for actions. When an action occurs, calculations are
-	made to repaint the frame.
-
-	@author	???
-	@version 0.1
-	*/
-	//public class mouthMover implements ActionListener
-	//{
-		/**
-		Responds to any action by calculating the location of drawings, and
-		then making them again.
-		@param		mouthEvent	The event that occured.
-		@author		???
-    	*/
-		/*public void actionPerformed(ActionEvent mouthEvent)
-		{
-			if (right == true)
-			{
-				angle = (angle + (Math.PI/30)) % (2*Math.PI);
-			}
-			else if (left == true)
-			{
-				angle = (angle - (Math.PI/30)) % (2*Math.PI);
-			}
-			else if (up == true)
-			{
-				botX = botX + (int)Math.floor(pacSpeedControl*Math.cos(angle - (Math.PI)/4));
-				botY = botY + (int)Math.floor(pacSpeedControl*Math.sin(angle - (Math.PI)/4));
-				if (botY+botRad < 0)
-					botY = 840;
-				if (botX-botRad > 800)
-					botX = -40;
-				if (botY-botRad > 800)
-					botY = -40;
-				if (botX+botRad < 0)
-					botX = 840;
-			}
-
-			else if (down == true)
-			{
-				botX = botX - (int)Math.floor(pacSpeedControl*Math.cos(angle - (Math.PI)/4));
-				botY = botY - (int)Math.floor(pacSpeedControl*Math.sin(angle - (Math.PI)/4));
-				if (botY+botRad < 0)
-					botY = 840;
-				if (botX-botRad > 800)
-					botX = -40;
-				if (botY-botRad > 800)
-					botY = -40;
-				if (botX+botRad < 0)
-					botX = 840;
-			}
-
-			repaint();
-		}
-	}*/
 
 	/**
 	arrowListener
@@ -403,124 +457,127 @@ public class BotPanel extends JPanel
 		public void keyPressed (KeyEvent e)
 		{
 			Message msg;
-			try
-			{
-				switch(e.getKeyCode())
+			if(!keyPressed){
+				keyPressed = true;
+				try
 				{
-					case KeyEvent.VK_RIGHT :
+					switch(e.getKeyCode())
 					{
-						//out.writeBytes("" + turnspeed + " " + 4 +"\n");
-						//msg = new MotMessage(	(byte)turnspeed,
-						//						MotMessage.CTRL_TRN);
-						//Registers.connection.sendMessage(msg);
-						msg = new ManMessage(MovementLogic.RIGHT);
-						Registers.connection.sendMessage(msg);
+						case KeyEvent.VK_D :
+						{
+							//out.writeBytes("" + turnspeed + " " + 4 +"\n");
+							//msg = new MotMessage(	(byte)turnspeed,
+							//						MotMessage.CTRL_TRN);
+							//Registers.connection.sendMessage(msg);
+							msg = new ManMessage(MovementLogic.RIGHT);
+							Registers.connection.sendMessage(msg);
 
-						//right = true;
-						//up = false;
-						//down = false;
-						//left = false;
-						break;
-					}
-					case KeyEvent.VK_LEFT :
-					{
-						//msg = new MotMessage(	(byte)(turnspeed*-1),
-						//						MotMessage.CTRL_TRN);
-						//Registers.connection.sendMessage(msg);
-						msg = new ManMessage(MovementLogic.LEFT);
-						Registers.connection.sendMessage(msg);
-						//out.writeBytes("" + turnspeed * -1 + " " + 4 +"\n");
-						//right = false;
-						//up = false;
-						//down = false;
-						//left = true;
-						break;
-					}
-					case KeyEvent.VK_UP :
-					{
-						//if (speed < 0)
-						//	speed = speed * -1;
+							//right = true;
+							//up = false;
+							//down = false;
+							//left = false;
+							break;
+						}
+						case KeyEvent.VK_A :
+						{
+							//msg = new MotMessage(	(byte)(turnspeed*-1),
+							//						MotMessage.CTRL_TRN);
+							//Registers.connection.sendMessage(msg);
+							msg = new ManMessage(MovementLogic.LEFT);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + turnspeed * -1 + " " + 4 +"\n");
+							//right = false;
+							//up = false;
+							//down = false;
+							//left = true;
+							break;
+						}
+						case KeyEvent.VK_W :
+						{
+							//if (speed < 0)
+							//	speed = speed * -1;
 
-						//msg = new MotMessage(	(byte)speed,
-						//						MotMessage.CTRL_FWD);
-						//Registers.connection.sendMessage(msg);
-						msg = new ManMessage(MovementLogic.FORWARD);
-						Registers.connection.sendMessage(msg);
-						//out.writeBytes("" + speed + " " + 3 +"\n");
-						//right = false;
-						//up = true;
-						//down = false;
-						//left = false;
-						break;
-					}
-					case KeyEvent.VK_DOWN :
-					{
-						//if (speed > 0)
-						//	speed = speed * -1;
+							//msg = new MotMessage(	(byte)speed,
+							//						MotMessage.CTRL_FWD);
+							//Registers.connection.sendMessage(msg);
+							msg = new ManMessage(MovementLogic.FORWARD);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + speed + " " + 3 +"\n");
+							//right = false;
+							//up = true;
+							//down = false;
+							//left = false;
+							break;
+						}
+						case KeyEvent.VK_S :
+						{
+							//if (speed > 0)
+							//	speed = speed * -1;
 
-						//msg = new MotMessage(	(byte)speed,
-						//						MotMessage.CTRL_FWD);
-						//Registers.connection.sendMessage(msg);
-						msg = new ManMessage(MovementLogic.BACKWARD);
-						Registers.connection.sendMessage(msg);
-						//out.writeBytes("" + speed + " " + 3 +"\n");
-						//right = false;
-						//up = false;
-						//down = true;
-						//left = false;
-						break;
-					}
-					case KeyEvent.VK_Z :
-					{
-						/*
-						setSpeed(-20);
-						msg = new MotMessage(	(byte)speed,
-												MotMessage.CTRL_FWD);
-						Registers.connection.sendMessage(msg);
-						//out.writeBytes("" + speed + " " + 3 +"\n");
-						break;
-						*/
-					}
-					case KeyEvent.VK_A :
-					{
-						/*
-						setSpeed(20);
-						msg = new MotMessage(	(byte)speed,
-												MotMessage.CTRL_FWD);
-						Registers.connection.sendMessage(msg);
+							//msg = new MotMessage(	(byte)speed,
+							//						MotMessage.CTRL_FWD);
+							//Registers.connection.sendMessage(msg);
+							msg = new ManMessage(MovementLogic.BACKWARD);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + speed + " " + 3 +"\n");
+							//right = false;
+							//up = false;
+							//down = true;
+							//left = false;
+							break;
+						}
+						//case KeyEvent.VK_Z :
+						//{
+							/*
+							setSpeed(-20);
+							msg = new MotMessage(	(byte)speed,
+													MotMessage.CTRL_FWD);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + speed + " " + 3 +"\n");
+							break;
+							*/
+						//}
+						//case KeyEvent.VK_A :
+						//{
+							/*
+							setSpeed(20);
+							msg = new MotMessage(	(byte)speed,
+													MotMessage.CTRL_FWD);
+							Registers.connection.sendMessage(msg);
 
 
-						//out.writeBytes("" + speed + " " + 3 +"\n");
-						break;
-						*/
-					}
-					// stop
-					case KeyEvent.VK_SPACE :
-					{
+							//out.writeBytes("" + speed + " " + 3 +"\n");
+							break;
+							*/
+						//}
+						// stop
+						case KeyEvent.VK_SPACE :
+						{
 
-						//up = false;
-						//down = false;
-						//msg = new MotMessage(	(byte)0x0,
-						//						MotMessage.CTRL_FWD);
-						//Registers.connection.sendMessage(msg);
-						msg = new ManMessage(MovementLogic.STOP);
-						Registers.connection.sendMessage(msg);
-						//out.writeBytes("" + 0 + " " + 3 +"\n");
-						break;
+							//up = false;
+							//down = false;
+							//msg = new MotMessage(	(byte)0x0,
+							//						MotMessage.CTRL_FWD);
+							//Registers.connection.sendMessage(msg);
+							msg = new ManMessage(MovementLogic.STOP);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + 0 + " " + 3 +"\n");
+							break;
 
+						}
+						default :
+						{
+							System.out.println("unknown key");
+							break;
+						}
 					}
-					default :
-					{
-						System.out.println("unknown key");
-						break;
-					}
+				} // end switch
+				catch(Exception exe)
+				{
+					exe.printStackTrace();
+					System.out.println(exe.toString());
 				}
-			} // end switch
-			catch(Exception exe)
-			{
-				exe.printStackTrace();
-				System.out.println(exe.toString());
-			}
+			}//End if !keyPressed
 		}
 		//***** End keyPressed method *****//
 
@@ -528,45 +585,54 @@ public class BotPanel extends JPanel
 		Responds to key releases.
 		@param		e	The event that occured.
 		@author		???
-    	*//*
+    	*/
 		public void keyReleased(KeyEvent e)
 		{
-			MotMessage msg;
+			Message msg;
 
-			try
-			{
-				switch(e.getKeyCode())
+			if(keyPressed){
+				keyPressed = false;
+				try
 				{
-					case KeyEvent.VK_LEFT :
+					switch(e.getKeyCode())
 					{
-						left = false;
-						msg = new MotMessage(	(byte)0x00,
-												MotMessage.CTRL_TRN);
-						Registers.connection.sendMessage((Message)msg);
-						//out.writeBytes("" + 0 + " " + 4 +"\n");
-						break;
-					}
-					case KeyEvent.VK_RIGHT :
-					{
-						right = false;
-						msg = new MotMessage(	(byte)0x00,
-												MotMessage.CTRL_TRN);
-						Registers.connection.sendMessage((Message)msg);
-						//out.writeBytes("" + 0 + " " + 4 +"\n");
-						break;
-					}
-					default :
-					{
-						// do nothing
+						case KeyEvent.VK_A :
+						case KeyEvent.VK_S :
+						case KeyEvent.VK_W :
+						{
+							//left = false;
+							//msg = new MotMessage(	(byte)0x00,
+							//						MotMessage.CTRL_TRN);
+							//Registers.connection.sendMessage((Message)msg);
+							msg = new ManMessage(MovementLogic.STOP);
+							Registers.connection.sendMessage(msg);
+							//out.writeBytes("" + 0 + " " + 4 +"\n");
+							break;
+						}
+						case KeyEvent.VK_D :
+						{
+							//right = false;
+							msg = new ManMessage(MovementLogic.STOP);
+							Registers.connection.sendMessage(msg);
+							//msg = new MotMessage(	(byte)0x00,
+							//						MotMessage.CTRL_TRN);
+							//Registers.connection.sendMessage((Message)msg);
+							//out.writeBytes("" + 0 + " " + 4 +"\n");
+							break;
+						}
+						default :
+						{
+							// do nothing
+						}
 					}
 				}
-			}
-			catch(Exception exe)
-			{
-				exe.printStackTrace();
-				System.out.println(exe.toString());
-			}
-		}*/
+				catch(Exception exe)
+				{
+					exe.printStackTrace();
+					System.out.println(exe.toString());
+				}
+			}//end if keyPressed
+		}
 		//***** End keyReleased method *****//
 	}
 

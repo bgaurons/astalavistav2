@@ -207,7 +207,7 @@ if a IRget code (say a byte 0x03) is received
 	@author		Joyce Tang
     */
 	public void run() {
-		
+
 		//Serial string reading.
 		String sensorValue = "";
 		String[] sensorSplit;
@@ -237,26 +237,26 @@ if a IRget code (say a byte 0x03) is received
 			}
 			catch (IOException ex) {}
 			catch (InterruptedException e) {}
-			
+
 
 			sensorSplit = sensorValue.split(",");
-			
+
 			if(!(sensorSplit[0].equals("-1")) &&
 				!(sensorSplit[0].trim().equals(""))){
 
 				dataLock.lock();
-				
+
 				IRSensorVal = Integer.parseInt(sensorSplit[0]);
 
 				dataLock.unlock();
 			}
-			
+
 			for(index = 1; index < sensorSplit.length; index++){
 				if(sensorSplit[index].equals("1")){
 					new BumpPressed(index);
 				}
 			}
-	
+
 
 			try {
 				Thread.sleep(ARDUINO_SLEEP);
@@ -329,8 +329,7 @@ if a IRget code (say a byte 0x03) is received
 	}
 
 	/**
-	 * <p>Sweep thread keeps running the sweep temp method over and over in
-	 * order to collect more temperatures.</p>
+	 * The thread that responds to a bump sensor
 	 *
 	 * @author			Benjamin Gauronskas
 	 * @version			0.1
@@ -345,7 +344,7 @@ if a IRget code (say a byte 0x03) is received
 		// Constructor initilized vars
 		/**
 		 Constructor takes bump Pressed.
-		 
+
 		 @param	bumpNumber		Sensor triggered.
 		 @author			Benjamin Gauronskas
 		 */
@@ -359,8 +358,8 @@ if a IRget code (say a byte 0x03) is received
 
 		/**
 		 What to do when a button is pressed
-		 
-		 
+
+
 		 @author			Benjamin Gauronskas
 		 */
 		public void run()

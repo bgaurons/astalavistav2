@@ -47,5 +47,10 @@ public class Registers
 	*/
 	public static BotPanel mainPac;
 
+	/**
+	The infrared sensor
+	*/
+	public static Arduino arduino;
+
 
 }
