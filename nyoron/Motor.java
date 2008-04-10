@@ -81,10 +81,7 @@ public class Motor extends I2CDevice implements Runnable
 	//sleep amount.
 	private static final int SLEEP_UNIT = 900;
 
-	/**
-	The amount of inches traversed in a single millisecond
-	*/
-	public static final double INCHES_PER_MILLISECOND = 0.001;
+
 
 	//This is a guess, but I hope to get an estimate of the amount of time
 	//it takes to turn a given amount using DEFAULT_SPEED.
@@ -161,8 +158,8 @@ X.
 
 		command(TWO_SEC_TO_ENABLE); // turn off automatic motor timeout
 
-		mode(DEPENDANT_SIGNED);
-		//mode(INDEPENDANT_SIGNED);
+		//mode(DEPENDANT_SIGNED);
+		mode(INDEPENDANT_SIGNED);
 				// set mode to one -127: full reverse,
 				// 0: stop, 127:
 				//full forward motors controlled together with
@@ -217,6 +214,31 @@ X.
 	{
 		forward = num;
 		turn = 0;
+	}
+
+
+        /**
+	Sets motor speeds
+	@param		forward	Right motor
+	@param		turn	Left motor
+	@author		Benjamin Gauronskas
+         */
+	public void setMotors(byte forward, byte turn)
+	{
+		this.forward = forward;
+		this.turn = turn;
+	}
+
+
+        /**
+	Sets motor speeds
+	@param		forward	Right motor
+	@param		turn	Left motor
+	@author		Benjamin Gauronskas
+         */
+	public void setMotors(int forward, int turn)
+	{
+		setMotors((byte)forward, (byte) turn);
 	}
 
         /**
@@ -291,13 +313,13 @@ X.
 	{
 		logicLock.lock();
 		//Stop forward motor.
-		rightMotor(0);
+		setMotors(0, 0);
 		//Turn the turn motor DEFAULT_SPEED in the right direction.
 		//if(direction == RIGHT){
 		if(turnAngle > 0)
-			leftMotor(DEFAULT_SPEED);
+			setMotors(DEFAULT_SPEED,-1*DEFAULT_SPEED);
 		else
-			leftMotor(-1*DEFAULT_SPEED);
+			setMotors(-1*DEFAULT_SPEED, DEFAULT_SPEED);
 		//}
 		//else{
 

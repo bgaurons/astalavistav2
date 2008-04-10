@@ -43,12 +43,19 @@ public class RobotLogic
 	{
 		// Open New welcome socket
 
+		Registers.connection = new ConManager();
+
 		Registers.ai = new ManualAI();
 		I2CChannel com5 = new I2CChannel("COM5");
 		Registers.motor = new Motor(com5);
+
 		Thermopile thermopile = new Thermopile(com5);
 
-		Registers.connection = new ConManager();
+		Registers.arduino = new Arduino("COM2");
+
+
+
+		MovementLogic.initialize("example.gif");
 
 
 		Thread mthread = new Thread(Registers.motor);

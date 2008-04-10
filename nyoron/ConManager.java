@@ -322,6 +322,7 @@ public class ConManager
 				case Message.THERM:		therm((ThermMessage) msg); break;
 				case Message.AI:		ai((AIMessage) msg); break;
 				case Message.POSIT:		position((PosMessage) msg);break;
+				case Message.MAPIM:		mapping((MapMessage) msg);break;
 				case Message.MANUL:
 					if (Registers.ai.aiType == AI.MANUAL){
 						manual((ManMessage) msg);} break;
@@ -421,6 +422,17 @@ public class ConManager
 		 */
 		private void position(PosMessage msg){
 			Registers.mainPac.parsePosMessage(msg);
+		}
+
+		/**
+		 * Updates the server's map.
+		 *
+		 *
+		 * @param	msg		The message containing the updated map
+		 * @author			Benjamin Gauronskas
+		 */
+		private void mapping(MapMessage msg){
+			Registers.mainPac.updateMap(msg.mapImage);
 		}
 	}
 

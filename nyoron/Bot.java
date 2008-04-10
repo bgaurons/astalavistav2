@@ -64,11 +64,19 @@ public class Bot extends JFrame
 		StatsPanel stats = new StatsPanel();
 		Registers.mainPac = new BotPanel(stats);
 
+
+		JScrollPane scrollPane = new JScrollPane(Registers.mainPac);
+		//scrollPane.setFocusable(true);
+
+
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new FlowLayout());
 		mainPanel.add(stats);
-		mainPanel.add(Registers.mainPac);
+		mainPanel.add(scrollPane);
 		mainPanel.add(Registers.tempPanel);
+
+		//ENTERPRISE SOLUTIONS
+		mainPanel.add(new AIChoice());
 
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setSize(width,height);
