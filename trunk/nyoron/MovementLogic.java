@@ -907,7 +907,7 @@ public class MovementLogic
 				//close to a wall in our travels.
 				if(infraredLength < DISTANCE_THRESHOLD){
 
-					System.out.println("!@#$\tIR READING: " +  infraredLength;
+					System.out.println("!@#$\tIR READING: " +  infraredLength);
 				}
 
 				if(infraredLength < DISTANCE_THRESHOLD &&
