@@ -130,4 +130,35 @@ public class PasswordPrompt
 
 	}
 
+	/**
+	Says the number that has been input
+
+	@param	number	character to say out loud.
+	@author		Benjamin Gauronskas
+	*/
+	public static void promptUser(){
+		char count = '3';
+		boolean passwordCorrect = false;
+		while(!passwordCorrect && count != '1')
+		{
+			passwordCorrect = passwordPrompt();
+			count -= 1;
+		}
+		if(passwordCorrect){
+			SoundSystem.play("something.au");
+			try{
+				Thread.sleep(2000);
+			}catch(InterruptedException e){}
+
+		}
+		else{
+			SoundSystem.play("alert.au");
+			try{
+				Thread.sleep(15000);
+			}catch(InterruptedException e){}
+		}
+
+
+	}
+
 }

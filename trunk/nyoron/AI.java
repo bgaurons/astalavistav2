@@ -40,6 +40,16 @@ public abstract class AI implements Runnable
 	public static final byte THERML = 0x01;
 
 	/**
+	The robot looks for heat.
+	*/
+	public static final byte PASSWO = 0x02;
+
+	/**
+	The robot does nothing particularly useful.
+	*/
+	public static final byte ROAMIN = 0x03;
+
+	/**
 	The thread created and ran when an AI is started.
 	*/
 	public Thread aiThread;
