@@ -232,9 +232,9 @@ if a IRget code (say a byte 0x03) is received
 
 				Thread.sleep(ARDUINO_SLEEP);
 				//in.read(arduinoRead);
-				//System.out.print("Arduino reading: ");
+				System.out.print("Arduino reading: ");
 				while((nextChar = ((char)in.read()))!= '\n'){
-				//	System.out.print(nextChar);
+					System.out.print(nextChar);
 					readString += nextChar;
 				}
 				System.out.println();
