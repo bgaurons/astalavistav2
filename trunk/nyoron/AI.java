@@ -85,8 +85,15 @@ public abstract class AI implements Runnable
 	@author		Benjamin Gauronskas
 	*/
 	public void run(){
+		boolean keepRunning;
 		init();
-		while(logic() && isRunning);
+		do{
+			keepRunning = logic();
+			System.out.println(
+				"!@#$\tKeepRunning = " + keepRunning + "\n" +
+				"!@#$\tIsRunning = " + isRunning);
+
+		}while(keepRunning && isRunning);
 		cleanup();
 	}
 
