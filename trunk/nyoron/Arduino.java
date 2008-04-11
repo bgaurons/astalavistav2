@@ -269,7 +269,8 @@ if a IRget code (say a byte 0x03) is received
 				dataLock.lock();
 
 				IRSensorVal = Integer.parseInt(sensorSplit[0]);
-				System.out.println("IRSENSOR " + IRSensorVal);
+				System.out.println("IRSENSOR1 " + sensorSplit[0]);
+				System.out.println("IRSENSOR2 " + IRSensorVal);
 
 				dataLock.unlock();
 							try {
