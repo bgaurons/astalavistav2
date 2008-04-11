@@ -46,12 +46,13 @@ public class RobotLogic
 		Registers.connection = new ConManager();
 
 		Registers.ai = new ManualAI();
-		I2CChannel com5 = new I2CChannel("COM5");
+		I2CChannel com5 = new I2CChannel("/dev/ttyUSB0");
 		Registers.motor = new Motor(com5);
 
 		Registers.thermopile = new Thermopile(com5);
 
-		//Registers.arduino = new Arduino("COM2");
+		System.out.println("Startup Arduino Code");
+		Registers.arduino = new Arduino("/dev/ttyUSB1");
 
 
 
