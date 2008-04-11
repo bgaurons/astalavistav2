@@ -893,6 +893,7 @@ public class MovementLogic
 		*/
 		public void run()
 		{
+			System.out.println("Mapping begun");
 			int infraredLength;
 			int currentX;
 			int currentY;
@@ -904,8 +905,14 @@ public class MovementLogic
 
 				//interrupt all movement in case we have accidentally come too
 				//close to a wall in our travels.
+				if(infraredLength < DISTANCE_THRESHOLD){
+
+					System.out.println("!@#$\tIR READING: " +  infraredLength;
+				}
+
 				if(infraredLength < DISTANCE_THRESHOLD &&
 					Registers.ai.aiType != AI.MANUAL){
+
 					avoidance(infraredLength);
 				}
 
