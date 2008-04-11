@@ -523,11 +523,11 @@ public class MovementLogic
 		if(
 			rightDistance > DISTANCE_THRESHOLD &&
 			leftDistance > DISTANCE_THRESHOLD){
-			plotPoint(	originalX,
-						originalY,
-						forwardDistance,
-						originalAngle,
-						Color.blue);
+			//plotPoint(	originalX,
+			//			originalY,
+			//			forwardDistance,
+			//			originalAngle,
+			//			Color.blue);
 
 		}else if(rightDistance > DISTANCE_THRESHOLD){
 			Registers.motor.setMotors(speed, speed);
@@ -929,11 +929,11 @@ public class MovementLogic
 				//cos = adj/hyp
 				//tan = opp/adj
 				//
-				plotPoint(	currentX,
-							currentY,
-							infraredLength,
-							currentAngle,
-							Color.red);
+				//plotPoint(	currentX,
+				//			currentY,
+				//			infraredLength,
+				//			currentAngle,
+				//			Color.red);
 			}
 
 		}
