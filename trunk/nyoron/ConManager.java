@@ -444,7 +444,9 @@ public class ConManager
 		private void ai(AIMessage msg){
 			if(Registers.ai != null){
 				//Stop the ai.
+				System.out.println("Stopping AI");
 				Registers.ai.stop();
+				System.out.println("AI stopped, starting: " + msg.aiType);
 
 				switch(msg.aiType){
 					case AI.MANUAL: Registers.ai = new ManualAI(); break;
