@@ -32,7 +32,7 @@ public class TempPanel extends JPanel
 	/**
 		A magic number that represents the max of a byte
 	*/
-	public static final byte MINF = (byte)0xFF;
+	public static final int MINF = 0xFF;
 
 	/**
 		An array representing all the temperature readings from the thermopile.
