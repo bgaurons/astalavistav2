@@ -304,10 +304,10 @@ public class MovementLogic
 
 
 	/**
-	starts or restarts the thread that sends server updates
+	Turns the robot angle radians.
 	@author		Benjamin Gauronskas
 	*/
-	private static void turn(double angle){
+	public static void turn(double angle){
 		if(angle < 0){
 			turnDirection = LEFT;
 
@@ -507,12 +507,62 @@ public class MovementLogic
 		if(
 			rightDistance > DISTANCE_THRESHOLD &&
 			leftDistance > DISTANCE_THRESHOLD){
-		}
 			plotPoint(	originalX,
 						originalY,
 						forwardDistance,
 						originalAngle,
 						Color.blue);
+
+		}else if(rightDistance > DISTANCE_THRESHOLD){
+			Registers.motor.setMotors(speed, speed);
+			startMotor();
+		}else{
+			turn(INCREMENT_ANGLE * 2);
+
+			Registers.motor.setMotors(speed, speed);
+			startMotor();
+		}
+
+
+
+
+
+	}
+
+    /**
+	Makes the robot go forward.
+
+	@author		Benjamin Gauronskas
+    */
+	public static void robotForward(){
+		stopTurning();
+		Registers.motor.setMotors(speed, speed);
+		startMotor();
+
+	}
+
+    /**
+	Makes the robot go backwards
+
+	@author		Benjamin Gauronskas
+    */
+	public static void robotBackward(){
+		stopTurning();
+		Registers.motor.setMotors(-1*speed, -1*speed);
+		startMotor();
+
+	}
+
+
+    /**
+	Makes the robot stop doing things
+
+	@author		Benjamin Gauronskas
+    */
+	public static void stopRoaming(){
+		stopTurning();
+		stopMotor();
+
 	}
 
 

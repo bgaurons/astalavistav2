@@ -57,5 +57,10 @@ public class Registers
 	*/
 	public static Arduino arduino;
 
+	/**
+	The infrared sensor
+	*/
+	public static Thermopile thermopile;
+
 
 }

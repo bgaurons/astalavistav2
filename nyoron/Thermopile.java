@@ -81,6 +81,8 @@ public class Thermopile extends I2CDevice
 	public static final int HOR_WIDTH = 32;
 	public static final int VERT_WIDTH = 8;
 
+	public static final int HOR_MIDDLE = HOR_WIDTH/2;
+
 	//The offset in register number to make the correct array position
 	private static final byte VERT_OFFSET = 0x02;
 
@@ -365,12 +367,13 @@ public class Thermopile extends I2CDevice
 	@author			Benjamin Gauronskas
 
     */
-	public boolean threshholdCrossed()
+	public boolean thresholdCrossed()
 	{
 		boolean returnVal;
 
 		threshholdLock.lock();
 		returnVal = threshholdCrossed;
+		threshholdCrossed = false;
 		threshholdLock.unlock();
 
 		return returnVal;

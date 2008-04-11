@@ -49,7 +49,7 @@ public class RobotLogic
 		I2CChannel com5 = new I2CChannel("COM5");
 		Registers.motor = new Motor(com5);
 
-		Thermopile thermopile = new Thermopile(com5);
+		Registers.thermopile = new Thermopile(com5);
 
 		//Registers.arduino = new Arduino("COM2");
 
