@@ -232,7 +232,7 @@ public class MovementLogic
 		angleUpdate = new AngleUpdate();
 
 
-		//mapIR = new MapIR();
+		mapIR = new MapIR();
 		System.out.println("THINGS ARE STARTED RIGHT?!");
 		stopMotor();
 		stopTurning();
