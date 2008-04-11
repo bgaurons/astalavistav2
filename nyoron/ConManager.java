@@ -441,6 +441,8 @@ public class ConManager
 				switch(msg.aiType){
 					case AI.MANUAL: Registers.ai = new ManualAI(); break;
 					case AI.THERML: Registers.ai = new ThermlAI(); break;
+					case AI.PASSWO: Registers.ai = new PassAI(); break;
+					case AI.ROAMIN: Registers.ai = new RoamAI(); break;
 					default: break;
 				}
 			}

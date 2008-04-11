@@ -27,7 +27,9 @@ implements ActionListener {
 	*/
 	static private String[] modes = {
 									"Manual",
-									"Heat Seaking"};
+									"Heat Seaking",
+									"Password Prompting",
+									"Roaming Mode"};
 	/**
 	Default and only constructor, takes no arguments and creates a JComboBox
 	that fulfills our needs.
@@ -53,8 +55,6 @@ implements ActionListener {
 		JComboBox cb = (JComboBox)e.getSource();
 
 		char choice = (((String)cb.getSelectedItem()).charAt(0));
-		System.out.println("OH FUCK. SHIT JUST GOT REAL."+
-							" I AM OUT OF HERE, DOG.");
 
 		switch(choice){
 			case 'M':
@@ -65,6 +65,16 @@ implements ActionListener {
 			case 'H':
 				System.out.println("Heat seaking pressed");
 				msg = new AIMessage(AI.THERML);
+				Registers.connection.sendMessage(msg);
+				break;
+			case 'P':
+				System.out.println("Password prompt selected");
+				msg = new AIMessage(AI.PASSWO);
+				Registers.connection.sendMessage(msg);
+				break;
+			case 'R':
+				System.out.println("Password prompt selected");
+				msg = new AIMessage(AI.PASSWO);
 				Registers.connection.sendMessage(msg);
 				break;
 			default: break;
