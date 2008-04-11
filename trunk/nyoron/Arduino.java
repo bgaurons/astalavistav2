@@ -211,7 +211,7 @@ if a IRget code (say a byte 0x03) is received
 		//Serial string reading.
 		String sensorValue = "";
 		String[] sensorSplit;
-		String readString = "";
+		String readString;
 		char nextChar;
 
 		byte[] arduinoRead = new byte[BUFFER_SIZE];
@@ -225,6 +225,7 @@ if a IRget code (say a byte 0x03) is received
 
 			try{
 
+				readString = "";
 				in.skip(in.available());
 
 				out.write(GET_DATA);
