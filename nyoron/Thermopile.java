@@ -112,7 +112,7 @@ public class Thermopile extends I2CDevice
 	/**
 	The temperature that needs to be crossed to trigger the threshhold.
 	*/
-	private byte threshhold;
+	public byte threshhold;
 
 	/**
 	The column that the threshhold has been crossed at.
