@@ -40,12 +40,20 @@ public class ThermlAI extends AI
 
 		//If the threshhold has been crossed, do something.
 		if(Registers.thermopile.thresholdCrossed()){
+
 			MovementLogic.stopRoaming();
 			int angleColumn = Registers.thermopile.getHotColumn();
 			MovementLogic.turn	(
 				Math.PI *
 				((angleColumn-Thermopile.HOR_MIDDLE)/Thermopile.HOR_WIDTH)
 								);
+
+
+			SoundSystem.play("alert.au");
+			try{
+				Thread.sleep(15000);
+			}catch(InterruptedException e){}
+
 		}
 		return returnVal;
 	}
