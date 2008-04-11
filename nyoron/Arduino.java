@@ -264,6 +264,7 @@ if a IRget code (say a byte 0x03) is received
 				dataLock.lock();
 
 				IRSensorVal = Integer.parseInt(sensorSplit[0]);
+				System.out.println("IRSENSOR " + IRSensorVal);
 
 				dataLock.unlock();
 			}
@@ -293,6 +294,8 @@ if a IRget code (say a byte 0x03) is received
 		dataLock.lock();
 		returnValue = IRSensorVal;
 		dataLock.unlock();
+
+		System.out.println("Getting IR Sensor: " + returnValue);
 
 		return returnValue;
 	}
