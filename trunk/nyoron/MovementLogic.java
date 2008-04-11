@@ -899,7 +899,8 @@ public class MovementLogic
 
 				//interrupt all movement in case we have accidentally come too
 				//close to a wall in our travels.
-				if(infraredLength < DISTANCE_THRESHOLD){
+				if(infraredLength < DISTANCE_THRESHOLD &&
+					Registers.ai.aiType != AI.MANUAL){
 					avoidance(infraredLength);
 				}
 
