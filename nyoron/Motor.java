@@ -175,6 +175,8 @@ X.
 		turn = 0;
 		go = true;
 
+		Registers.connection.motorStarted = true;
+
 
 	}
 

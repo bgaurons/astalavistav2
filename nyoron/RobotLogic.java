@@ -51,7 +51,7 @@ public class RobotLogic
 
 		Thermopile thermopile = new Thermopile(com5);
 
-		Registers.arduino = new Arduino("COM2");
+		//Registers.arduino = new Arduino("COM2");
 
 
 
