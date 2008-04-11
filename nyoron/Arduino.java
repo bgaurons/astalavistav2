@@ -303,9 +303,7 @@ if a IRget code (say a byte 0x03) is received
 
 		System.out.println("Getting IR Sensor: " + returnValue +
 							" Reading" + IRSensorVal);
-					try {
-						Thread.sleep(500);
-			} catch (InterruptedException e) {}
+
 
 		return returnValue;
 	}
