@@ -239,9 +239,9 @@ if a IRget code (say a byte 0x03) is received
 					readString += nextChar;
 				}
 
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {}
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {}
 
 				System.out.println();
 				in.skip(in.available());
@@ -269,14 +269,10 @@ if a IRget code (say a byte 0x03) is received
 
 				dataLock.lock();
 
-				IRSensorVal = Integer.parseInt(sensorValue.split(",")[0]);
-				System.out.println("IRSENSOR1 " + sensorSplit[0]);
-				System.out.println("IRSENSOR2 " + IRSensorVal);
+				IRSensorVal = Integer.parseInt(sensorSplit[0]);
+
 
 				dataLock.unlock();
-							try {
-								Thread.sleep(500);
-			} catch (InterruptedException e) {}
 			}
 
 			for(index = 1; index < sensorSplit.length; index++){
