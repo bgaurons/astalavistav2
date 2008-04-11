@@ -42,4 +42,17 @@ public class ManualAI extends AI
 	}
 
 
+	/**
+	Does nothing
+	@author		Benjamin Gauronskas
+	*/
+	public void init(){}
+
+
+	/**
+	Does nothing
+	@author		Benjamin Gauronskas
+	*/
+	public void cleanup(){}
+
 }

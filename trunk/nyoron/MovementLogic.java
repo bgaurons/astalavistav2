@@ -302,6 +302,20 @@ public class MovementLogic
 	}
 
 
+	/**
+	Makes the robot go forward.
+	@author		Benjamin Gauronskas
+	*/
+	public static void forward(){
+
+		if(!forward)
+			stopMotor();
+
+		forward = true;
+		stopTurning();
+		Registers.motor.setMotors(speed, speed);
+		startMotor();
+	}
 
 	/**
 	Turns the robot angle radians.

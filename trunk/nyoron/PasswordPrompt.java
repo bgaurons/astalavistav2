@@ -131,9 +131,10 @@ public class PasswordPrompt
 	}
 
 	/**
-	Says the number that has been input
+	Prompts the user for input. Alarm goes off if they do not enter the
+	correct password in three tries.
 
-	@param	number	character to say out loud.
+
 	@author		Benjamin Gauronskas
 	*/
 	public static void promptUser(){
@@ -145,7 +146,7 @@ public class PasswordPrompt
 			count -= 1;
 		}
 		if(passwordCorrect){
-			SoundSystem.play("something.au");
+			SoundSystem.play("acknowledge.au");
 			try{
 				Thread.sleep(2000);
 			}catch(InterruptedException e){}

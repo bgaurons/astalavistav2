@@ -46,4 +46,22 @@ public class RoamAI extends AI
 	}
 
 
+	/**
+	Starts motors up.
+	@author		Benjamin Gauronskas
+	*/
+	public void init(){
+		MovementLogic.forward();
+	}
+
+
+	/**
+	Stops motors.
+	@author		Benjamin Gauronskas
+	*/
+	public void cleanup(){
+		MovementLogic.stopRoaming();
+	}
+
+
 }

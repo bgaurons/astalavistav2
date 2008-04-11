@@ -73,10 +73,11 @@ public abstract class AI implements Runnable
 	*/
 	public AI(byte aiType)
 	{
+		this.isRunning = true;
 
 		this.aiType = aiType;
-		aiThread = new Thread(this,"AI thread");
-		aiThread.start();
+		this.aiThread = new Thread(this,"AI thread");
+		this.aiThread.start();
 	}
 
 	/**
@@ -84,8 +85,16 @@ public abstract class AI implements Runnable
 	@author		Benjamin Gauronskas
 	*/
 	public void run(){
+		init();
 		while(logic() && isRunning);
+		cleanup();
 	}
+
+	/**
+	A method that runs once on the robot, and then is followed by the loop.
+	@author		Benjamin Gauronskas
+	*/
+	protected abstract void init();
 
 	/**
 	This is where logic is actually put that will be run the AI.
@@ -93,6 +102,12 @@ public abstract class AI implements Runnable
 	@return		Whether the thread should continue or not.
 	*/
 	protected abstract boolean logic();
+
+	/**
+	A method that does whatever finishing routines need to be made.
+	@author		Benjamin Gauronskas
+	*/
+	protected abstract void cleanup();
 
 	/**
 	Logic that stops the thread from running. Obviously should be called when

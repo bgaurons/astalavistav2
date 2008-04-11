@@ -30,6 +30,11 @@ public class TempPanel extends JPanel
 	public static final byte DEF = 3;
 
 	/**
+		A magic number that represents the max of a byte
+	*/
+	public static final byte MINF = (byte)0xFF;
+
+	/**
 		An array representing all the temperature readings from the thermopile.
 	*/
 	public byte[][] heatMap;
@@ -63,11 +68,12 @@ public class TempPanel extends JPanel
 		for(int j=0; j<Thermopile.VERT_WIDTH; j++){
 			for(int k=0; k<Thermopile.HOR_WIDTH; k++){
 				red = Math.abs((int)(heatMap[k][j]*DEF));
+				red = Math.min(red, MINF);
 				//System.out.println("!@#$\tRed is: " + red);
-				Color shit = new Color(red,0,0);
+				Color colorval = new Color(red,0,0);
 
 				//System.out.println(heatMap[k][j]);
-				page.setColor(shit);
+				page.setColor(colorval);
 				page.fillRect(k*SIZE,j*SIZE,SIZE,SIZE);
 			}
 		}
