@@ -73,8 +73,8 @@ implements ActionListener {
 				Registers.connection.sendMessage(msg);
 				break;
 			case 'R':
-				System.out.println("Password prompt selected");
-				msg = new AIMessage(AI.PASSWO);
+				System.out.println("Roam Selected");
+				msg = new AIMessage(AI.ROAMIN);
 				Registers.connection.sendMessage(msg);
 				break;
 			default: break;
