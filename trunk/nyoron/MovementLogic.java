@@ -598,6 +598,9 @@ public class MovementLogic
 									double angleR,
 									Color color ){
 
+		System.out.println("plotPoint\t" + xR + " " + yR + " " + distanceP +
+		" " + angleR + " " + color);
+
 		int red = Color.red.getRGB();
 		int blue = Color.blue.getRGB();
 
