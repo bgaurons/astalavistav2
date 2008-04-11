@@ -261,6 +261,8 @@ public class BotPanel extends JPanel implements Scrollable
 		speed = 50;
 		pacSpeedControl = speed/SPEED_DIVISOR;
 		turnspeed = 15;
+
+		Registers.connection.botPanelStarted = true;
 	}
 
     /**

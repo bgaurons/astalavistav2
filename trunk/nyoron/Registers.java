@@ -22,6 +22,11 @@ point.</p>
 public class Registers
 {
 	/**
+	The connection has been made
+	*/
+	public static boolean connectionMade = false;
+
+	/**
 	A one way connection to another computer.
 	*/
 	public static ConManager connection;

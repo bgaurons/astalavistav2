@@ -222,12 +222,18 @@ public class MovementLogic
 		try {
 			map = ImageIO.read(new File(mapFile));
 		} catch (IOException e) {
+			System.out.println("Reading map failed");
 
 		}
 
+		System.out.println("THINGS ARE STARTED RIGHT?!");
+
 		xyUpdate = new XYUpdate();
 		angleUpdate = new AngleUpdate();
-		mapIR = new MapIR();
+
+
+		//mapIR = new MapIR();
+		System.out.println("THINGS ARE STARTED RIGHT?!");
 		stopMotor();
 		stopTurning();
 
@@ -322,7 +328,8 @@ public class MovementLogic
 	*/
 	private static void startMotor(){
 		coordLock.lock();
-		xyUpdate.stopped = false;
+		if(xyUpdate != null)
+			xyUpdate.stopped = false;
 		coordLock.unlock();
 	}
 
@@ -335,7 +342,8 @@ public class MovementLogic
 
 		Registers.motor.setMotors(0,0);
 		coordLock.lock();
-		xyUpdate.stopped = true;
+		if(xyUpdate != null)
+			xyUpdate.stopped = true;
 		lastX = x;
 		lastY = y;
 		coordLock.unlock();
@@ -350,7 +358,8 @@ public class MovementLogic
 
 
 		coordLock.lock();
-		angleUpdate.stopped = true;
+		if(angleUpdate != null)
+			angleUpdate.stopped = true;
 		lastAngle = angle;
 		coordLock.unlock();
 	}
@@ -360,7 +369,8 @@ public class MovementLogic
 	*/
 	public static void startTurning(){
 		coordLock.lock();
-		angleUpdate.stopped = false;
+		if(angleUpdate != null)
+			angleUpdate.stopped = false;
 		coordLock.unlock();
 	}
 
@@ -560,7 +570,7 @@ public class MovementLogic
 		public AngleUpdate()
 		{
 			stopped = true;
-
+			System.out.println("AngleUpdate STARTED RIGHT?!");
 			t = new Thread(this,"Angle Update");
 			t.start();
 		}
@@ -656,7 +666,7 @@ public class MovementLogic
 		public XYUpdate()
 		{
 			stopped = false;
-
+			System.out.println("XYUpdate STARTED RIGHT?!");
 			t = new Thread(this,"XY Update");
 			t.start();
 		}
@@ -819,6 +829,7 @@ public class MovementLogic
 			int currentY;
 			double currentAngle;
 
+			while(!Registers.connectionMade);
 			while(true){
 				infraredLength = Registers.arduino.getIRSensor();
 

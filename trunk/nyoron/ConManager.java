@@ -85,7 +85,7 @@ public class ConManager
 	/**
 	This tells whether this is a server connection or a client connection
 	*/
-	private boolean connectionType;
+	protected boolean connectionType;
 
 	/**
 	This tells if we are connected or not.
@@ -98,6 +98,20 @@ public class ConManager
 	*/
 	private MessageListener msgListener;
 
+	/**
+	The motor for the robot.
+	*/
+	public boolean motorStarted;
+	/**
+	The temperature GUI panel needs to be globally accesible to receive
+	incoming messages
+	*/
+	public boolean tempPanelStarted;
+
+	/**
+	The gui element that shows where the robot is.
+	*/
+	public boolean botPanelStarted;
 
 	//Use default constructor on the client.
 
@@ -145,7 +159,17 @@ public class ConManager
 
 		//Finally the lock for synchronization. I think locks are
 		//easier to read then synchronize blocks.
+
+		motorStarted = false;
+		tempPanelStarted = false;
+		botPanelStarted = false;
+
+
 		connectionLock = new ReentrantLock();
+
+
+		connectionType = CLIENT;
+		Registers.connectionMade = true;
 
 		connected = new AtomicBoolean(true);
 		msgListener = new MessageListener();
@@ -180,7 +204,8 @@ public class ConManager
 		//Finally the lock for synchronization. I think locks are
 		//easier to read then synchronize blocks.
 		connectionLock = new ReentrantLock();
-
+		connectionType = SERVER;
+		Registers.connectionMade = true;
 		connected = new AtomicBoolean(true);
 		msgListener = new MessageListener();
 
@@ -251,6 +276,14 @@ public class ConManager
 			Message message;
 			//This should probably run forever... someone figure out why this
 			//is a bad idea, and I'll be happy to change this.
+			if(connectionType == SERVER){
+				while(	!tempPanelStarted ||
+						!botPanelStarted);
+
+			}
+			else{
+				while(!motorStarted);
+			}
 			while (true ){
 				try{
 

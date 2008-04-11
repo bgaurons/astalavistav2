@@ -48,6 +48,8 @@ public class TempPanel extends JPanel
 
 		heatMap = new byte[Thermopile.HOR_WIDTH][Thermopile.VERT_WIDTH];
 
+		Registers.connection.tempPanelStarted = true;
+
 	}
 
     /**
