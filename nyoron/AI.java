@@ -124,7 +124,7 @@ public abstract class AI implements Runnable
 	public void stop(){
 		isRunning = false;
 		//Busy wait to wait for the thread to end.
-		while(aiThread.isAlive());
+		//while(aiThread.isAlive());
 
 	}
 
