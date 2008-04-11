@@ -319,6 +319,22 @@ public class MovementLogic
 		startMotor();
 	}
 
+
+	/**
+	Makes the robot go forward.
+	@author		Benjamin Gauronskas
+	*/
+	public static void backward(){
+
+		if(forward)
+			stopMotor();
+
+		forward = false;
+		stopTurning();
+		Registers.motor.setMotors(-1*speed, -1*speed);
+		startMotor();
+	}
+
 	/**
 	Turns the robot angle radians.
 	@author		Benjamin Gauronskas
@@ -532,11 +548,18 @@ public class MovementLogic
 		}else if(rightDistance > DISTANCE_THRESHOLD){
 			Registers.motor.setMotors(speed, speed);
 			startMotor();
-		}else{
+		}else if(leftDistance > DISTANCE_THRESHOLD){
 			turn(INCREMENT_ANGLE * 2);
 
 			Registers.motor.setMotors(speed, speed);
 			startMotor();
+		}else{
+			backward();
+			try{
+				Thread.sleep(1000);
+			}catch(InterruptedException ex){}
+
+			avoidance(rightDistance);
 		}
 
 
@@ -682,6 +705,7 @@ public class MovementLogic
 					coordLock.lock();
 					angle = lastAngle - displacement;
 					if (angle < 0){
+
 						angle = (2* Math.PI)- angle;
 					}
 					//x = lastX + (int)Math.floor(displacement*
