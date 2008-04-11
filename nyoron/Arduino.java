@@ -211,8 +211,12 @@ if a IRget code (say a byte 0x03) is received
 		//Serial string reading.
 		String sensorValue = "";
 		String[] sensorSplit;
+		String readString = "";
+		char nextChar;
 
 		byte[] arduinoRead = new byte[BUFFER_SIZE];
+		char arduinoCharToRead;
+		
 		int bumpValue = 0;
 		int index = 0;
 
@@ -220,16 +224,29 @@ if a IRget code (say a byte 0x03) is received
 
 
 			try{
+
+				in.skip(in.available());
+
 				out.write(GET_DATA);
 				out.flush();
 
 				Thread.sleep(ARDUINO_SLEEP);
-				in.read(arduinoRead);
+				//in.read(arduinoRead);
+				System.out.print("Arduino reading: ");
+				while((nextChar = ((char)in.read()))!= '\n'){
+					System.out.print(nextChar);
+					readString += nextChar;
+				}
+				System.out.println();
+				in.skip(in.available());
+				
+				
 				//in.read(touchSensorReading);
 
 
 				if(arduinoRead != null){
-					sensorValue = (new String(arduinoRead)).trim();
+					//sensorValue = (new String(arduinoRead)).trim();
+					sensorValue = (readString).trim();
 				}
 				else{
 					sensorValue = "-1,-1";
