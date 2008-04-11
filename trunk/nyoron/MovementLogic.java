@@ -219,12 +219,14 @@ public class MovementLogic
 	*/
 	public static void initialize(String mapFile)
 	{
-		try {
-			map = ImageIO.read(new File(mapFile));
-		} catch (IOException e) {
-			System.out.println("Reading map failed");
+		//try {
+		//	map = ImageIO.read(new File(mapFile));
+		//} catch (IOException e) {
+		//	System.out.println("Reading map failed");
 
-		}
+		//}
+
+		map = new BufferedImage(4000, 4000, BufferedImage.TYPE_3BYTE_BGR);
 
 		System.out.println("THINGS ARE STARTED RIGHT?!");
 
