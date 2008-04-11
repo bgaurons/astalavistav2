@@ -142,6 +142,7 @@ public class PasswordPrompt
 		boolean passwordCorrect = false;
 		while(!passwordCorrect && count != '1')
 		{
+			System.out.println(count);
 			passwordCorrect = passwordPrompt();
 			count -= 1;
 		}

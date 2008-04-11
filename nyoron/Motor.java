@@ -79,7 +79,7 @@ public class Motor extends I2CDevice implements Runnable
 	//This is how long it takes to turn unit radians with the robot.
 	//if we multiply this by the amount we are turning, then we get the correct
 	//sleep amount.
-	private static final int SLEEP_UNIT = 900;
+	private static final int SLEEP_UNIT = 700;
 
 
 
