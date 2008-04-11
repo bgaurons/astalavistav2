@@ -124,6 +124,7 @@ public class ConManager
 	{
 		Properties config;
 
+		connection = null;
 
 		//First try to see if client.config exist.
 		config = new Properties();
@@ -136,15 +137,22 @@ public class ConManager
 			e.printStackTrace();
 		}
 
-		try{
-			connection = new Socket(
+		while(connection == null){
+
+			try{
+				connection = new Socket(
 							config.getProperty("Address").trim(),
 							Integer.parseInt(config.getProperty("Port").trim())
-									);
-		}
-		catch (IOException e) {
-			System.err.println(	"!@#$\tConnection failed!");
-			e.printStackTrace();
+										);
+			}
+			catch (IOException e) {
+				System.err.println(	"!@#$\tConnection failed!");
+				e.printStackTrace();
+			}
+
+			try{
+				Thread.sleep(5000);
+			}catch(InterruptedException ex){}
 		}
 
 		//Get our streams set up.
