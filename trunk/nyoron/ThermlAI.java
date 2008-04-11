@@ -37,6 +37,16 @@ public class ThermlAI extends AI
 	*/
 	public boolean logic(){
 		boolean returnVal = true;
+
+		//If the threshhold has been crossed, do something.
+		if(Registers.thermopile.thresholdCrossed()){
+			MovementLogic.stopRoaming();
+			int angleColumn = Registers.thermopile.getHotColumn();
+			MovementLogic.turn	(
+				Math.PI *
+				((angleColumn-Thermopile.HOR_MIDDLE)/Thermopile.HOR_WIDTH)
+								);
+		}
 		return returnVal;
 	}
 
