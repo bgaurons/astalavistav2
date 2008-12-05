@@ -10,6 +10,10 @@ import java.io.*;
  *
  * 	<h1>Revision History:</h1>
  *	<ul>
+ *		<li>November 3, 2008, Benjamin Gauronskas</li>
+ *		<ul>
+ *			<li>Added type constants.</li>
+ *		</ul>
  *		<li>April 1, 2008, Benjamin Gauronskas</li>
  *		<ul>
  *			<li>Added type constants.</li>
@@ -22,7 +26,7 @@ import java.io.*;
  *
  *
  * @author			Benjamin Gauronskas
- * @version			0.1
+ * @version			0.9
  */
 public class Message implements Serializable
 {
@@ -33,6 +37,9 @@ public class Message implements Serializable
 	public static final byte POSIT	 = 0x04;
 	public static final byte MANUL	 = 0x05;
 	public static final byte MAPIM	 = 0x06;
+	public static final byte POINT	 = 0x07;
+	public static final byte SGMNT	 = 0x08;
+	public static final byte HTPLT	 = 0x09;
 
 	private Date timestamp;
 	private byte message_type;
