@@ -22,6 +22,7 @@ public class Sonar {
 	which direction the sensor is facing in laymans
 	*/
 	private int orientation = 0;
+
 	
 	/**
 	Constructor to initalize the determine which globals are relevant
