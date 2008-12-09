@@ -189,7 +189,34 @@ public class Map
 		}
 	}
 
+	/**
+	 *	Returns a small section of the wall map determined by parameters passed to it.
+	 *	@param	x	the leftmost x coordinate of the section.
+	 *	@param 	y	the bottomost y coordinate
+	 *	@param	displace_x	The width of the image
+	 *	@param	displace_y	the height of the new image
 
+	 *	@return	Will return a smaller than expected subimage if parts are out of bounds.
+	 *	@author Benjamin Gauronskas
+	 */
+	public int[] getWallMapSection(int x, int y, int displace_x, int displace_y, int[] target){
+
+		System.out.println("!@#$\tin getWallMapSection.\n\tx = " + x +
+		"\n\ty= " + y + "\n\tdisplace_x = " + displace_x + "\n\tdisplace_y = " + displace_y);
+		if (y+displace_y > MAP_PIXELS_Y)
+			displace_y = MAP_PIXELS_Y;
+		if(x+displace_x > MAP_PIXELS_X)
+			displace_x = MAP_PIXELS_X;
+		if(x <0)
+			x=0;
+		if(y < 0)
+			y = 0;
+		System.out.println("!@#$\tAfter error checking.\n\tx = " + x +
+		"\n\ty= " + y + "\n\tdisplace_x = " + displace_x + "\n\tdisplace_y = " + displace_y);
+		System.out.println("!@#$\tExiting Map.getWallMapSection");
+		return wallMapImage.getRGB(x, y, Math.abs(displace_x), Math.abs(displace_y), target, 0, 1);
+
+	}
 
 
     /**

@@ -40,6 +40,7 @@ public class Message implements Serializable
 	public static final byte POINT	 = 0x07;
 	public static final byte SGMNT	 = 0x08;
 	public static final byte HTPLT	 = 0x09;
+	public static final byte AUTO	 = 0x0A;
 
 	private Date timestamp;
 	private byte message_type;

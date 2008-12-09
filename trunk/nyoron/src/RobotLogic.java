@@ -42,6 +42,7 @@ public class RobotLogic
 	public static void main(String[] args) throws Exception
 	{
 		// Open New welcome socket
+		Registers.map = new Map();
 
 		Registers.connection = new ConManager();
 
@@ -67,7 +68,8 @@ public class RobotLogic
 
 		Movement.initialize();
 
-
+		WallFollower.initialize();
+		
 		Thread mthread = new Thread(Registers.motor);
 		mthread.start();
 
