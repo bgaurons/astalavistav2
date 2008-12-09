@@ -221,9 +221,9 @@ public class Movement {
 
 		//}
 
-		map = new BufferedImage(4000, 4000, BufferedImage.TYPE_3BYTE_BGR);
+		//map = new BufferedImage(4000, 4000, BufferedImage.TYPE_3BYTE_BGR);
 
-		System.out.println("THINGS ARE STARTED RIGHT?!");
+		//System.out.println("THINGS ARE STARTED RIGHT?!");
 
 		xyUpdate = new XYUpdate();
 //		angleUpdate = new AngleUpdate();
@@ -492,8 +492,9 @@ the new X,Y. After this, you can replace lastX and lastY with the new values.
 	@author		Benjamin Gauronskas
 	*/
 	private static void boundaryCheck(){
+	/*
 //		if (y+BotPanel.ROBOT_RADIUS_PIXELS < 0){
-			coordLock.lock();
+// 			coordLock.lock();
 //			y = BotPanel.ROBOT_RADIUS_PIXELS;
 			//coordLock.unlock();
 			stopMotor();
@@ -521,7 +522,7 @@ the new X,Y. After this, you can replace lastX and lastY with the new values.
 			coordLock.unlock();
 			stopMotor();
 		//}
-
+	*/
 	}
 
 	   /**

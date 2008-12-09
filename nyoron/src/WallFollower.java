@@ -1,13 +1,8 @@
 // WallFollower.java
 // Wallfollowing AI
-
-import java.io.IOException;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
 import java.lang.InterruptedException;
 import java.util.concurrent.locks.*;
-import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.awt.Point;
 
 
@@ -18,32 +13,46 @@ public class WallFollower {
 	private static float sonar_R 				= 0;
 	private static float compass_degree 		= 0;
 	
-	private static Point point; 						// returned from Movement.getRobotPoint()
+	private static Point point; 							// returned from Movement.getRobotPoint()
 	
 	public static int x							= 0;		// X,Y coordinates of the robot
-	public static int y							= 0;									
-	private static final float lowerbound		= 10;		// Highest acceptable distance from wall
+	public static int y							= 0;
+	
+	private static final float lowerbound		= 0;		// Lowest acceptable distance from wall
 	private static final float upperbound		= 10;		// Highest acceptable distance from wall
+	
 	private static final float sonarDistance	= 50;		// Sonar read distance
 
 	public static final boolean LEFT = false;				// Left turn
 	public static final boolean RIGHT = true;				// Right turn
-
-	private static boolean followingWall 	= false;		// Dead end special case
-	private static boolean turn			= RIGHT;		// SET TURN BASED DIRECTION
 	
-	public static final int RIGHT_SONAR 	= 0;			// Used for follow
-	public static final int LEFT_SONAR 	= 1;
-	public static final int MIDDLE_SONAR 	= 2;
-	public static final int NO_SONAR 		= 3;
+	public static final int RIGHT_SONAR 		= 0;		// Used for follow
+	public static final int LEFT_SONAR 		= 1;
+	public static final int MIDDLE_SONAR 		= 2;
+	public static final int NO_SONAR 			= 3;
 
-	private static int following_sonar 	= RIGHT_SONAR;	// Sonar that the robot is following
+	private static int following_sonar 		= RIGHT_SONAR;	// Sonar that the robot is following
 
-	private static WallFollowThread wft;					// Logic handling thread
+	public static WallFollowThread wft;					// Logic handling thread
 
+
+	/**
+	Whether the movement is computer controlled or controlled by the robot.
+	*/
+	protected static boolean isAutomatic = true;
+
+	/**
+	INITIALIZE!
+	@author Benjamin Gauronskas
+	*/
+	public static void initialize() {
+		
+		wft = new WallFollowThread();
+		
+	}
 	
 	// Main logic for the wall following algorithm.
-	private static class WallFollowThread implements Runnable {
+	private static class WallFollowThread implements Runnable  {
 
 		Thread t;
 		boolean stopped;
@@ -61,9 +70,11 @@ public class WallFollower {
 		//Runs until stopped equals true.
 		public void run() {
 			
+			System.out.print("w");
+			
 			while(!stopped) {
-	
-				followingWall 	= false;
+
+				while(!isAutomatic);
 
 				compass_degree 	= Registers.arduino.getCompass();			// deviation from due north, theta
 				
@@ -90,9 +101,12 @@ public class WallFollower {
 					
 				if(following_sonar == NO_SONAR) {
 	
+					// if robot is close enough to a wall, stop motors, update coordinates, and resume the do loop
 					if(sonar_L >= lowerbound || sonar_M >= lowerbound || sonar_R >= lowerbound) {
 							
 						Movement.stopMotor();
+						
+						following_sonar = RIGHT_SONAR;
 					}
 	
 					point = Movement.getRobotPoint();
@@ -132,12 +146,10 @@ public class WallFollower {
 			}
 		}
 
-		// Initializes wall following AI 
-		public static void initialize() {
-			
-			wft = new WallFollowThread();
-			
-		}
+
+
+
+
 	
 		// Returns a portion of the buffered image corresponding to the front of
 		// the robot so that we are able to decide what direction to travel
@@ -146,12 +158,6 @@ public class WallFollower {
 		// d is direction relative snapshot distance
 		// the integer returned indicates the direction the robot should turn
 		public void free(float x_f, float y_f, float theta, float d) {
-	
-			boolean isFree;
-			
-			BufferedImage leftImage;
-			BufferedImage middleImage;
-			BufferedImage rightImage;
 			
 			// assume XY represents the dead center of the robot
 			// relative directional displacements
@@ -165,13 +171,13 @@ public class WallFollower {
 			float x_Displacement	= d * (float)Math.sin(theta);		// d sin theta
 			float y_Displacement	= d * (float)Math.cos(theta);		// d cos theta
 			
-			int[] left_rgbArray	= new int[50];
-			int[] mid_rgbArray	= new int[50];
-			int[] right_rgbArray	= new int[50];
+			int[] left_rgbArray		= new int[(int)d*(int)d];
+			int[] mid_rgbArray		= new int[(int)d*(int)d];
+			int[] right_rgbArray		= new int[(int)d*(int)d];
 			
-			int leftCount 	= 0;
-			int midCount 	= 0;
-			int rightCount 	= 0;
+			int leftcount			= 0;
+			int midcount			= 0;
+			int rightcount			= 0;
 			
 			// different quadrant cases
 			if(theta < 0 && theta >= Math.PI/2) {						// theta less than 90
@@ -217,21 +223,16 @@ public class WallFollower {
 			}
 			
 			// return look ahead portion of the buffered image
-			// getSubimage(x,y,width,height)
-			leftImage	= Registers.map.wallMapImage.getSubimage((int)x_left,(int)y_left,(int)x_Displacement,(int)y_Displacement);
-			middleImage	= Registers.map.wallMapImage.getSubimage((int)x_mid,(int)y_mid,(int)x_Displacement,(int)y_Displacement);
-			rightImage	= Registers.map.wallMapImage.getSubimage((int)x_right,(int)y_right,(int)x_Displacement,(int)y_Displacement);
-			
+			// getSubimage(x,y,width,height) originally used, but not used anymore
 			// get pixel arrays
 			// int[]	getRGB(int startX, int startY, int w, int h, int[] rgbArray, int offset, int scansize)
-			left_rgbArray	= leftImage.getRGB(0,0,(int)x_Displacement,(int) y_Displacement, left_rgbArray, 0, 1);
-			mid_rgbArray	= middleImage.getRGB(0,0,(int)x_Displacement,(int)y_Displacement, mid_rgbArray, 0, 1);
-			right_rgbArray	= rightImage.getRGB(0,0,(int)x_Displacement,(int)y_Displacement, right_rgbArray, 0, 1);
-			
-			int leftcount	= 0;
-			int midcount	= 0;
-			int rightcount	= 0;
+		
+			System.out.println("\nx_left:\t" + x_left + "\ny_left:\t" + y_left + "\nx_Displacement:\t" + x_Displacement + "\ny_Displacement:\t" + y_Displacement + "\n\n");
 
+			left_rgbArray	= Registers.map.getWallMapSection((int)x_left,(int)y_left,(int)d,(int)d,left_rgbArray);
+			mid_rgbArray	= Registers.map.getWallMapSection((int)x_mid,(int)y_mid,(int)d,(int)d,mid_rgbArray);
+			right_rgbArray	= Registers.map.getWallMapSection((int)x_right,(int)y_right,(int)d,(int)d,right_rgbArray);
+			
 			//get array obstacle pixel count
 			for(int i=0; i< left_rgbArray.length; i++) {
 				
@@ -261,7 +262,7 @@ public class WallFollower {
 				
 			} else if(midcount > leftcount && midcount > rightcount) {	// forward
 				
-				
+				// do nothing
 				
 			} else {														// right
 				
@@ -269,5 +270,16 @@ public class WallFollower {
 		
 			}
 		}
+	}
+
+	/**
+	Sets whether or not the robot is automatic or not.
+	@param	auto	Whether it will be automatic or not.
+	@author	Benjamin Gauronskas
+	*/
+	public static void setAuto(boolean auto) {
+		
+		isAutomatic = auto;
+		
 	}
 }

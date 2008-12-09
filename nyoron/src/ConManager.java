@@ -376,11 +376,12 @@ public class ConManager
 				case Message.SGMNT:		SegmentMapping((SegmentMessage) msg);break;
 				case Message.HTPLT:		heatplotMapping((HeatPlotMessage)msg);break;
 				case Message.MANUL:
-					if (Registers.ai.aiType == AI.MANUAL){
+					if (!WallFollower.isAutomatic){
 						manual((ManMessage) msg);} break;
 				case Message.MOTOR:
-					if (Registers.ai.aiType == AI.MANUAL){
+					if (!WallFollower.isAutomatic){
 						motor((MotMessage) msg);} break;
+				case Message.AUTO:		changeControl((AutoMessage)msg); break;
 				default: break; //Means junk... hopefully.
 			}
 		}
@@ -522,6 +523,17 @@ public class ConManager
 		 */
 		private void heatplotMapping(HeatPlotMessage msg){
 			Registers.map.plotHeat(msg.temperature, msg.location);
+		}
+
+		/**
+		 * Changes control from automatic to manual or vice versa.
+		 *
+		 *
+		 * @param	msg		The message containing the change.
+		 * @author			Benjamin Gauronskas
+		 */
+		private void changeControl(AutoMessage msg){
+			WallFollower.setAuto(msg.auto);
 		}
 	}
 
