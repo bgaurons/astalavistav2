@@ -1,0 +1,1 @@
+Let's buy a motherboard domestically this time.
